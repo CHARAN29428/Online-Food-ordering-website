@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TasteTrail Dine-In & Pre-Order Kitchen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              300: '#fdba74',
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+            }
+          },
+          boxShadow: {
+            'soft': '0 8px 30px rgba(0,0,0,0.06)',
+            'card': '0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.03); }
+    }
+    .pulse-glow { animation: pulseGlow 2.5s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased font-sans flex flex-col min-h-screen relative selection:bg-brand-500 selection:text-white">
+
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="javascript:void(0)" onclick="switchMainTab('menu')" class="flex items-center gap-3 group">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+        <div>
+          <span class="font-serif text-2xl font-bold tracking-tight text-stone-900 flex items-center gap-0.5">
+            TasteTrail<span class="text-brand-500">.</span>
+          </span>
+          <span class="text-[10px] tracking-widest font-extrabold uppercase text-stone-500 block -mt-1">Dine-In & Pre-Order Kitchen</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Tabs -->
+      <nav class="hidden md:flex items-center space-x-1.5 bg-stone-100 p-1.5 rounded-2xl border border-stone-200/80">
+        <button onclick="switchMainTab('menu')" id="nav-btn-menu" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-white bg-brand-600 shadow-sm flex items-center gap-1.5">
+          🍔 Menu
+        </button>
+        <button onclick="switchMainTab('favorites')" id="nav-btn-favorites" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-stone-600 hover:text-stone-950 flex items-center gap-1.5">
+          ❤️ Favorites <span id="nav-fav-badge" class="ml-1 px-1.5 py-0.5 bg-rose-100 text-rose-600 text-[10px] rounded-full hidden">0</span>
+        </button>
+        <button onclick="switchMainTab('orders')" id="nav-btn-orders" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-stone-600 hover:text-stone-950 flex items-center gap-1.5">
+          📦 My Orders <span id="nav-orders-dot" class="w-2 h-2 rounded-full bg-emerald-500 hidden"></span>
+        </button>
+        <button onclick="switchMainTab('kds')" id="nav-btn-kds" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-stone-600 hover:text-stone-950 flex items-center gap-1.5 border border-dashed border-stone-300">
+          👨‍🍳 Staff KDS
+        </button>
+      </nav>
+
+      <!-- Cart Button & Mobile Trigger -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleCartDrawer(true)" class="relative p-2.5 sm:px-4 sm:py-2.5 bg-stone-900 hover:bg-black text-white rounded-2xl flex items-center gap-2.5 transition active:scale-95 shadow-md shadow-stone-900/10">
+          <div class="relative">
+            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+            <span id="header-cart-badge" class="absolute -top-2.5 -right-2.5 bg-brand-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-stone-900 scale-0 transition-transform">0</span>
+          </div>
+          <span class="hidden sm:inline-block text-xs font-bold tracking-wider uppercase">Cart</span>
+          <span id="header-cart-subtotal" class="hidden sm:inline-block text-xs font-black text-amber-300 ml-1 border-l border-stone-700 pl-2">₹0</span>
+        </button>
+
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-xl border border-stone-200 text-stone-700 hover:bg-stone-100">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Nav -->
+    <div id="mobile-nav-panel" class="hidden md:hidden border-t border-stone-200 bg-white px-4 py-3 grid grid-cols-4 gap-2 text-center text-xs font-bold">
+      <button onclick="switchMainTab('menu'); toggleMobileMenu()" class="py-2 rounded-xl bg-stone-100 text-stone-800">🍔 Menu</button>
+      <button onclick="switchMainTab('favorites'); toggleMobileMenu()" class="py-2 rounded-xl bg-stone-100 text-stone-800">❤️ Wishlist</button>
+      <button onclick="switchMainTab('orders'); toggleMobileMenu()" class="py-2 rounded-xl bg-stone-100 text-stone-800">📦 Orders</button>
+      <button onclick="switchMainTab('kds'); toggleMobileMenu()" class="py-2 rounded-xl bg-stone-100 text-stone-800">👨‍🍳 KDS</button>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <section id="hero-banner" class="relative bg-stone-900 text-white overflow-hidden py-8 md:py-14">
+      <div class="absolute -top-24 -left-24 w-80 h-80 bg-brand-600/30 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-0 right-0 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-7 space-y-4 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand-500/20 border border-brand-500/40 text-brand-300 text-xs font-bold tracking-wider uppercase">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 🍽️ Zero Wait Times • Pure Dine-In Only
+          </div>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-white leading-tight">
+            Order From Table or <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-brand-500 italic">Pre-Order Before Arrival</span>.
+          </h1>
+          <p class="text-stone-300 text-xs sm:text-sm max-w-xl font-light">
+            Skip menu handoffs! Order straight from your restaurant table or place your food order up to <strong>10 minutes before arrival</strong> so hot dishes are ready when you step inside.
+          </p>
+
+          <!-- Dining Mode Badges -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2 text-xs">
+            <div class="bg-stone-800/90 border border-stone-700 px-3.5 py-2 rounded-xl flex items-center gap-2">
+              <span class="text-amber-400 font-bold">🪑 Seated Order</span>
+              <span class="text-stone-300">Tables 1–20 Direct Ordering</span>
+            </div>
+            <div class="bg-stone-800/90 border border-stone-700 px-3.5 py-2 rounded-xl flex items-center gap-2">
+              <span class="text-emerald-400 font-bold">⏱️ Pre-Arrival</span>
+              <span class="text-stone-300">Max 10-Min Live Arrival Timer</span>
+            </div>
+            <div class="bg-stone-800/90 border border-stone-700 px-3.5 py-2 rounded-xl flex items-center gap-2">
+              <span class="text-sky-400 font-bold">🏷️ Pocket-Friendly</span>
+              <span class="text-stone-300">Dishes starting at just ₹39</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 relative flex justify-center">
+          <div class="relative w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border-2 border-stone-800 bg-stone-800">
+            <img 
+              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" 
+              alt="TasteTrail Dine-In Dining Hall" 
+              class="w-full h-64 sm:h-72 object-cover"
+              onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+              <div>
+                <span class="px-2 py-0.5 bg-brand-500 text-white text-[10px] font-extrabold uppercase rounded-md">Bistro Experience</span>
+                <h4 class="text-base font-bold text-white mt-1">TasteTrail Dining Hall</h4>
+                <p class="text-xs text-stone-300">Freshly prepared & served hot at table</p>
+              </div>
+              <div class="text-xs font-bold text-emerald-400 bg-stone-900/80 px-2 py-1 rounded-lg">Tables 1-20</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="main-container">
+      
+      <!-- MENU TAB -->
+      <section id="menu-view" class="space-y-6">
+        
+        <!-- Search & Control Header -->
+        <div class="bg-white p-4 sm:p-6 rounded-3xl border border-stone-200/90 shadow-soft space-y-4">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <!-- Search Bar -->
+            <div class="relative flex-1">
+              <svg class="w-5 h-5 text-stone-400 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+              <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Search pocket-friendly dishes (e.g. Biryani, Paneer, Burger, Cold Coffee)..."
+                oninput="handleSearch(this.value)"
+                class="w-full pl-12 pr-10 py-3 bg-stone-50 border border-stone-200 rounded-2xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
+              />
+              <button onclick="clearSearch()" id="clear-search-btn" class="hidden absolute right-3.5 top-3.5 text-stone-400 hover:text-stone-700">✕</button>
+            </div>
+
+            <!-- Sorting & Dietary Controls -->
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+              <!-- Diet Filter (Veg / Non-Veg) -->
+              <div class="inline-flex bg-stone-100 p-1 rounded-2xl border border-stone-200 text-xs font-semibold">
+                <button onclick="setDietFilter('all')" id="diet-all" class="diet-btn px-3 py-1.5 rounded-xl bg-stone-900 text-white transition">All</button>
+                <button onclick="setDietFilter('veg')" id="diet-veg" class="diet-btn px-3 py-1.5 rounded-xl text-stone-600 hover:text-emerald-700 flex items-center gap-1 transition">
+                  <span class="w-2 h-2 rounded-full bg-emerald-600"></span> Veg
+                </button>
+                <button onclick="setDietFilter('nonveg')" id="diet-nonveg" class="diet-btn px-3 py-1.5 rounded-xl text-stone-600 hover:text-rose-700 flex items-center gap-1 transition">
+                  <span class="w-2 h-2 rounded-full bg-rose-600"></span> Non-Veg
+                </button>
+              </div>
+
+              <!-- Sort Dropdown -->
+              <select id="sort-select" onchange="handleSortChange(this.value)" class="bg-stone-100 border border-stone-200 text-stone-700 text-xs font-bold rounded-2xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <option value="default">✨ Chef's Specials</option>
+                <option value="price-low">💰 Price: Low to High</option>
+                <option value="price-high">💎 Price: High to Low</option>
+                <option value="rating">⭐ Highest Rated</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar" id="category-pills">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Food Dishes Grid -->
+        <div id="dishes-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 min-h-[300px]">
+          <!-- Populated synchronously -->
+        </div>
+
+        <!-- Empty Results Alert -->
+        <div id="no-dishes-view" class="hidden bg-white rounded-3xl p-12 text-center border border-dashed border-stone-300">
+          <div class="text-4xl mb-3">🔍</div>
+          <h3 class="text-lg font-bold text-stone-800">No matching dishes found</h3>
+          <p class="text-xs text-stone-500 max-w-sm mx-auto mt-1">Try modifying your search keywords or resetting categories.</p>
+          <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-stone-900 text-white rounded-xl text-xs font-bold">Reset Filters</button>
+        </div>
+      </section>
+
+      <section id="favorites-view" class="hidden space-y-6">
+        <div class="flex items-center justify-between pb-3 border-b border-stone-200">
+          <div>
+            <h2 class="text-2xl font-serif font-bold text-stone-900 flex items-center gap-2">
+              ❤️ Saved Favorites
+            </h2>
+            <p class="text-xs text-stone-500">Your handpicked dishes for lightning-fast re-ordering at TasteTrail</p>
+          </div>
+          <button onclick="switchMainTab('menu')" class="text-xs font-bold text-brand-600 hover:text-brand-700">← Back to Menu</button>
+        </div>
+
+        <div id="favorites-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+
+        <div id="empty-favorites-view" class="hidden bg-white rounded-3xl p-12 text-center border border-dashed border-stone-300">
+          <div class="text-4xl mb-3">🤍</div>
+          <h3 class="text-base font-bold text-stone-800">No favorite dishes yet</h3>
+          <p class="text-xs text-stone-500 max-w-sm mx-auto mt-1">Click the heart icon on any dish to save it here for quick ordering.</p>
+          <button onclick="switchMainTab('menu')" class="mt-4 px-5 py-2.5 bg-brand-500 text-white rounded-xl text-xs font-bold">Explore Menu</button>
+        </div>
+      </section>
+
+      <!-- ORDERS VIEW -->
+      <section id="orders-view" class="hidden space-y-6">
+        <div class="flex items-center justify-between pb-3 border-b border-stone-200">
+          <div>
+            <h2 class="text-2xl font-serif font-bold text-stone-900 flex items-center gap-2">
+              📦 Dine-In & Pre-Arrival Tracker
+            </h2>
+            <p class="text-xs text-stone-500">Active table preparation timers, live arrival countdowns, and digital bills</p>
+          </div>
+          <button onclick="switchMainTab('menu')" class="text-xs font-bold text-brand-600 hover:text-brand-700">Add More Items +</button>
+        </div>
+
+        <div id="orders-list-container" class="space-y-4"></div>
+
+        <div id="empty-orders-view" class="hidden bg-white rounded-3xl p-12 text-center border border-dashed border-stone-300">
+          <div class="text-4xl mb-3">🧾</div>
+          <h3 class="text-base font-bold text-stone-800">No active orders placed</h3>
+          <p class="text-xs text-stone-500 max-w-sm mx-auto mt-1">Place an order from your table or select a 10-minute pre-arrival time to view live prep status.</p>
+          <button onclick="switchMainTab('menu')" class="mt-4 px-5 py-2.5 bg-brand-500 text-white rounded-xl text-xs font-bold">Browse Dishes</button>
+        </div>
+      </section>
+
+      <!-- KITCHEN DISPLAY SYSTEM (KDS) TAB -->
+      <section id="kds-view" class="hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-200 gap-2">
+          <div>
+            <h2 class="text-2xl font-serif font-bold text-stone-900 flex items-center gap-2">
+              👨‍🍳 Kitchen Display & Staff Screen
+            </h2>
+            <p class="text-xs text-stone-500">Live order queue, customer arrival timers, and kitchen status controls</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Kitchen Live
+            </span>
+          </div>
+        </div>
+
+        <div id="kds-orders-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div id="kds-empty-view" class="hidden bg-white rounded-3xl p-12 text-center border border-dashed border-stone-300">
+          <div class="text-4xl mb-3">🍳</div>
+          <h3 class="text-base font-bold text-stone-800">Kitchen Queue is Clear</h3>
+          <p class="text-xs text-stone-500 max-w-sm mx-auto mt-1">All incoming seated orders and pre-arrival tickets have been served.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Cart Drawer Overlay -->
+  <div id="cart-overlay" class="fixed inset-0 bg-stone-950/60 z-50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleCartDrawer(false)"></div>
+  
+  <!-- Slide-Over Cart Drawer -->
+  <aside id="cart-drawer" class="fixed top-0 right-0 bottom-0 w-full sm:w-[420px] bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+    <!-- Header -->
+    <div class="px-6 py-5 border-b border-stone-200 flex items-center justify-between bg-stone-50">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center font-bold">🛒</div>
+        <div>
+          <h3 class="font-bold text-stone-900 text-base">Your Cart</h3>
+          <p id="drawer-item-count" class="text-[11px] text-stone-500">0 items selected</p>
+        </div>
+      </div>
+      <button onclick="toggleCartDrawer(false)" class="p-2 text-stone-400 hover:text-stone-800 rounded-lg hover:bg-stone-200 transition">✕</button>
+    </div>
+
+    <!-- Dine-In Notice Banner -->
+    <div class="px-6 py-2.5 bg-amber-50 border-b border-amber-200/60 flex items-center gap-2 text-[11px] font-semibold text-amber-900">
+      <span>✨</span>
+      <span>Dine-In & Pre-Arrival Only. No delivery charges!</span>
+    </div>
+
+    <!-- Cart Items Scroll -->
+    <div id="drawer-items-list" class="flex-1 overflow-y-auto px-6 py-4 divide-y divide-stone-100"></div>
+
+    <!-- Cart Empty State -->
+    <div id="drawer-empty-state" class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center space-y-3">
+      <div class="text-5xl">🛒</div>
+      <h4 class="font-bold text-stone-800 text-base">Your cart is empty</h4>
+      <p class="text-xs text-stone-400 max-w-xs">Explore our pocket-friendly menu and select your favorite dishes.</p>
+      <button onclick="toggleCartDrawer(false); switchMainTab('menu')" class="mt-2 px-5 py-2.5 bg-brand-500 text-white text-xs font-bold rounded-xl shadow">Explore Dishes</button>
+    </div>
+
+    <!-- Checkout Summary Box -->
+    <div id="drawer-summary-box" class="border-t border-stone-200 p-6 bg-stone-50 space-y-3">
+      <!-- Promo Code Field -->
+      <div class="flex items-center gap-2">
+        <input 
+          type="text" 
+          id="promo-input" 
+          placeholder="Promo (Try 'TASTY20')" 
+          class="flex-1 bg-white border border-stone-300 px-3 py-2 rounded-xl text-xs uppercase font-bold text-stone-800 focus:outline-none focus:ring-1 focus:ring-brand-500"
+        />
+        <button onclick="applyPromoCode()" class="px-3.5 py-2 bg-stone-800 hover:bg-stone-900 text-white rounded-xl text-xs font-bold transition">Apply</button>
+      </div>
+      <div id="promo-result" class="text-[11px] font-bold hidden"></div>
+
+      <!-- Cost Breakdown -->
+      <div class="space-y-1.5 text-xs text-stone-600">
+        <div class="flex justify-between"><span>Items Subtotal</span><span id="bill-subtotal" class="font-bold text-stone-900">₹0</span></div>
+        <div class="flex justify-between"><span>GST & Service (5%)</span><span id="bill-tax" class="text-stone-800">₹0</span></div>
+        <div class="flex justify-between text-emerald-600 font-semibold"><span>Service & Seating</span><span>FREE (₹0)</span></div>
+        <div id="bill-discount-row" class="flex justify-between text-emerald-600 font-bold hidden">
+          <span>Coupon Discount</span><span id="bill-discount">-₹0</span>
+        </div>
+        <div class="pt-2 border-t border-stone-300 flex justify-between text-sm font-black text-stone-900">
+          <span>Total Bill</span>
+          <span id="bill-total" class="text-brand-600 text-base font-black">₹0</span>
+        </div>
+      </div>
+
+      <button onclick="openCheckoutModal()" class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white rounded-2xl font-bold text-sm tracking-wide shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 transition active:scale-[0.99]">
+        <span>Choose Dining Mode & Order</span> →
+      </button>
+    </div>
+  </aside>
+
+  <!-- CHECKOUT / ORDER PLACEMENT MODAL -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-stone-200 flex flex-col">
+      <div class="px-6 py-4 border-b border-stone-200 flex items-center justify-between sticky top-0 bg-white z-10">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🍽️</span>
+          <div>
+            <h3 class="font-bold text-stone-900 text-base">TasteTrail Dine-In Checkout</h3>
+            <p class="text-xs text-stone-500">Select Seated or 10-Minute Pre-Arrival</p>
+          </div>
+        </div>
+        <button onclick="closeCheckoutModal()" class="text-stone-400 hover:text-stone-700 text-lg">✕</button>
+      </div>
+
+      <form onsubmit="handlePlaceOrder(event)" class="p-6 space-y-4">
+        <!-- Order Type Selection -->
+        <div>
+          <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Where are you ordering from? *</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="order-mode-btn border-2 border-brand-500 bg-brand-50/70 p-3 rounded-2xl flex flex-col cursor-pointer transition">
+              <input type="radio" name="orderType" value="seated" checked onchange="toggleOrderModeUI('seated')" class="hidden">
+              <span class="text-sm font-bold text-stone-900 flex items-center gap-1.5">🪑 At The Restaurant</span>
+              <span class="text-[11px] text-stone-500 mt-1">Already seated at Table (1–20)</span>
+            </label>
+
+            <label class="order-mode-btn border border-stone-200 hover:border-stone-300 p-3 rounded-2xl flex flex-col cursor-pointer transition">
+              <input type="radio" name="orderType" value="preorder" onchange="toggleOrderModeUI('preorder')" class="hidden">
+              <span class="text-sm font-bold text-stone-900 flex items-center gap-1.5">⏱️ Pre-Arrival</span>
+              <span class="text-[11px] text-stone-500 mt-1">Reaching within 10 mins</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Seated Table Selector (Mode A) -->
+        <div id="table-select-container">
+          <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Select Table Number *</label>
+          <select id="cust-table" class="w-full text-xs font-bold px-3.5 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-stone-50">
+            <option value="Table 1">Table 1 (Near Window)</option>
+            <option value="Table 2">Table 2 (Center Dining)</option>
+            <option value="Table 3">Table 3 (Family Booth)</option>
+            <option value="Table 4">Table 4 (Courtyard)</option>
+            <option value="Table 5">Table 5 (Terrace View)</option>
+            <option value="Table 6">Table 6 (Corner Quiet)</option>
+            <option value="Table 7">Table 7 (High Top)</option>
+            <option value="Table 8">Table 8 (Family Booth)</option>
+            <option value="Table 9">Table 9 (Center Dining)</option>
+            <option value="Table 10">Table 10 (Window View)</option>
+            <option value="Table 11">Table 11 (Private Nook)</option>
+            <option value="Table 12">Table 12 (Main Hall)</option>
+            <option value="Table 15">Table 15 (Terrace)</option>
+            <option value="Table 20">Table 20 (VIP Lounge)</option>
+          </select>
+        </div>
+
+        <!-- Pre-Arrival Slider & Timer Limit (Mode B) -->
+        <div id="preorder-time-container" class="hidden bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-stone-800 uppercase tracking-wider">Arrival Time Window (Max 10 Mins) *</label>
+            <span id="slider-time-label" class="text-xs font-black text-brand-600 bg-white px-2 py-0.5 rounded-lg border border-amber-300">7 mins</span>
+          </div>
+          <input 
+            type="range" 
+            id="cust-arrival-slider" 
+            min="1" 
+            max="10" 
+            value="7" 
+            step="1"
+            oninput="document.getElementById('slider-time-label').textContent = this.value + ' mins'"
+            class="w-full accent-brand-500 cursor-pointer"
+          />
+          <p class="text-[11px] text-amber-800 leading-tight">
+            ⚠️ <em>Policy: Pre-ordering is available strictly within 10 minutes of arrival so dishes stay freshly prepared and hot.</em>
+          </p>
+        </div>
+
+        <!-- Customer Identity -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Your Name *</label>
+            <input type="text" id="cust-name" required placeholder="e.g. Arun Kumar" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Phone Number *</label>
+            <input type="tel" id="cust-phone" required pattern="[0-9]{10}" placeholder="10-digit mobile number" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Kitchen / Chef Notes</label>
+          <input type="text" id="cust-instructions" placeholder="e.g. Extra spicy, less oil, serve drinks first..." class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+
+        <!-- Payment Mode -->
+        <div>
+          <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Payment Method</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="payment-card border-2 border-brand-500 bg-brand-50/60 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer">
+              <input type="radio" name="paymentMethod" value="UPI at Table" checked class="hidden" onchange="highlightPayment(this)">
+              <span class="text-base mb-1">📱</span>
+              <span class="text-[11px] font-bold text-stone-800">UPI / QR</span>
+            </label>
+            <label class="payment-card border border-stone-200 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-stone-400">
+              <input type="radio" name="paymentMethod" value="Card at Table" class="hidden" onchange="highlightPayment(this)">
+              <span class="text-base mb-1">💳</span>
+              <span class="text-[11px] font-bold text-stone-800">Card Swiped</span>
+            </label>
+            <label class="payment-card border border-stone-200 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-stone-400">
+              <input type="radio" name="paymentMethod" value="Cash to Server" class="hidden" onchange="highlightPayment(this)">
+              <span class="text-base mb-1">💵</span>
+              <span class="text-[11px] font-bold text-stone-800">Pay Cash</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Total Bill -->
+        <div class="p-3 bg-stone-100 rounded-2xl flex items-center justify-between text-xs">
+          <span class="font-bold text-stone-700">Total Payable at TasteTrail</span>
+          <span id="checkout-amount" class="text-base font-black text-brand-600">₹0</span>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md shadow-brand-500/30 transition active:scale-[0.99]">
+          Send Order to TasteTrail Kitchen
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Shelf -->
+  <div id="toast-shelf" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <footer class="bg-stone-900 text-stone-400 py-10 border-t border-stone-800 text-xs mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <span class="font-serif text-2xl font-bold text-white tracking-tight flex items-center gap-0.5">
+          TasteTrail<span class="text-brand-500">.</span>
+        </span>
+        <p class="mt-2 text-stone-400 leading-relaxed">
+          Contemporary dine-in and pre-order smart kitchen serving fresh, pocket-friendly meals prepared hot on demand.
+        </p>
+      </div>
+      <div>
+        <h4 class="font-bold uppercase tracking-wider text-stone-200 mb-2">Dine-In Timings</h4>
+        <p class="leading-relaxed">All Days: 11:00 AM – 11:00 PM</p>
+        <p class="text-emerald-400 font-semibold mt-1">🟢 Kitchen Open & Taking Table Orders</p>
+      </div>
+      <div>
+        <h4 class="font-bold uppercase tracking-wider text-stone-200 mb-2">Guest Support</h4>
+        <p>Manager Desk: +91 91234-56789</p>
+        <p>Inquiries: hello@tastetrailkitchen.com</p>
+        <p class="text-[11px] text-stone-500 mt-2">© 2026 TasteTrail Dine-In & Pre-Order Kitchen.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* Budget-friendly, reduced-price food dataset */
+    const SEED_DISHES = [
+      {
+        id: "tt1",
+        name: "Paneer Tikka (6 pcs)",
+        category: "Starters",
+        price: 139,
+        rating: 4.8,
+        reviews: 210,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=700&q=80",
+        description: "Clay-oven roasted cottage cheese infused with ajwain and spiced yogurt marinade."
+      },
+      {
+        id: "tt2",
+        name: "Crispy Sweet Corn Chaat",
+        category: "Starters",
+        price: 99,
+        rating: 4.7,
+        reviews: 145,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=700&q=80",
+        description: "Golden fried sweet corn tossed with tangy lime, chili flakes, and fresh cilantro."
+      },
+      {
+        id: "tt3",
+        name: "Spicy Smoked Chicken Wings",
+        category: "Starters",
+        price: 159,
+        rating: 4.8,
+        reviews: 320,
+        diet: "nonveg",
+        image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=700&q=80",
+        description: "Juicy chicken wings tossed in smoked BBQ glaze with house dip."
+      },
+      {
+        id: "tt4",
+        name: "Hara Bhara Kabab (4 pcs)",
+        category: "Starters",
+        price: 89,
+        rating: 4.6,
+        reviews: 110,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=700&q=80",
+        description: "Wholesome spinach, green pea, and paneer patties pan-seared to crisp perfection."
+      },
+      {
+        id: "tt5",
+        name: "Hyderabadi Dum Biryani",
+        category: "Main Course",
+        price: 199,
+        rating: 4.9,
+        reviews: 640,
+        diet: "nonveg",
+        image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=700&q=80",
+        description: "Slow-dum cooked aromatic long basmati rice with succulent chicken and saffron raita."
+      },
+      {
+        id: "tt6",
+        name: "Butter Chicken with Naan",
+        category: "Main Course",
+        price: 189,
+        rating: 4.9,
+        reviews: 512,
+        diet: "nonveg",
+        image: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=700&q=80",
+        description: "Tender tandoori chicken simmered in rich creamy butter makhani gravy."
+      },
+      {
+        id: "tt7",
+        name: "Paneer Butter Masala & Naan",
+        category: "Main Course",
+        price: 159,
+        rating: 4.7,
+        reviews: 380,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=700&q=80",
+        description: "Fresh cottage cheese cubes in silky cashew-tomato gravy, served hot."
+      },
+      {
+        id: "tt8",
+        name: "Dal Makhani with 2 Butter Rotis",
+        category: "Main Course",
+        price: 129,
+        rating: 4.8,
+        reviews: 290,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=700&q=80",
+        description: "Black lentils slow-cooked overnight with white butter, cream, and ginger."
+      },
+      {
+        id: "tt9",
+        name: "Farmhouse Veggie Pizza (8-inch)",
+        category: "Pizza & Burgers",
+        price: 179,
+        rating: 4.7,
+        reviews: 340,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=700&q=80",
+        description: "Baked sourdough pizza loaded with mozzarella, bell peppers, onions, and corn."
+      },
+      {
+        id: "tt10",
+        name: "Classic Smash Cheese Burger",
+        category: "Pizza & Burgers",
+        price: 119,
+        rating: 4.8,
+        reviews: 275,
+        diet: "nonveg",
+        image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=700&q=80",
+        description: "Crispy chicken smash patty, cheddar cheese, caramelized onions, and fries."
+      },
+      {
+        id: "tt11",
+        name: "Chilled Cold Coffee Shake",
+        category: "Beverages",
+        price: 69,
+        rating: 4.8,
+        reviews: 190,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=700&q=80",
+        description: "Blended espresso with creamy milk, vanilla foam, and dark cocoa drizzle."
+      },
+      {
+        id: "tt12",
+        name: "Fresh Mint Lime Soda",
+        category: "Beverages",
+        price: 39,
+        rating: 4.6,
+        reviews: 140,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=700&q=80",
+        description: "Hand-squeezed fresh yellow lime, mint sprigs, and chilled sparkling club soda."
+      },
+      {
+        id: "tt13",
+        name: "Sweet Mango Lassi",
+        category: "Beverages",
+        price: 59,
+        rating: 4.7,
+        reviews: 125,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1571006687082-f38b80e8e6be?auto=format&fit=crop&w=700&q=80",
+        description: "Thick beaten yogurt churned with real Alphonso mango pulp and cardamom."
+      },
+      {
+        id: "tt14",
+        name: "Warm Brownie with Vanilla Scoop",
+        category: "Desserts",
+        price: 89,
+        rating: 4.9,
+        reviews: 410,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=700&q=80",
+        description: "Fudgy walnut chocolate brownie topped with pure vanilla bean ice cream."
+      },
+      {
+        id: "tt15",
+        name: "Hot Gulab Jamun (2 pcs)",
+        category: "Desserts",
+        price: 49,
+        rating: 4.8,
+        reviews: 315,
+        diet: "veg",
+        image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=700&q=80",
+        description: "Traditional soft khoya dumplings soaked in warm saffron-cardamom syrup."
+      }
+    ];
+
+    const CATEGORIES = ["All", "Starters", "Main Course", "Pizza & Burgers", "Beverages", "Desserts"];
+
+    /* Application State */
+    let appState = {
+      menu: SEED_DISHES,
+      cart: {}, // { [dishId]: count }
+      favorites: new Set(),
+      orders: [],
+      activeCategory: "All",
+      activeDiet: "all",
+      searchQuery: "",
+      sortBy: "default",
+      discountPercent: 0
+    };
+
+    function initLocalStorage() {
+      try {
+        const storedCart = localStorage.getItem("tastetrail_cart");
+        if (storedCart) appState.cart = JSON.parse(storedCart);
+
+        const storedFavs = localStorage.getItem("tastetrail_favorites");
+        if (storedFavs) appState.favorites = new Set(JSON.parse(storedFavs));
+
+        const storedOrders = localStorage.getItem("tastetrail_orders");
+        if (storedOrders) appState.orders = JSON.parse(storedOrders);
+      } catch (e) {
+        console.warn("Local storage parse note:", e);
+      }
+    }
+
+    function saveCart() {
+      localStorage.setItem("tastetrail_cart", JSON.stringify(appState.cart));
+      renderCartUI();
+      renderDishes();
+      renderFavorites();
+    }
+
+    function saveFavorites() {
+      localStorage.setItem("tastetrail_favorites", JSON.stringify(Array.from(appState.favorites)));
+      updateFavBadge();
+      renderDishes();
+      renderFavorites();
+    }
+
+    function saveOrders() {
+      localStorage.setItem("tastetrail_orders", JSON.stringify(appState.orders));
+      renderOrdersView();
+      renderKDSView();
+    }
+
+    function renderCategoryButtons() {
+      const container = document.getElementById("category-pills");
+      if (!container) return;
+
+      container.innerHTML = CATEGORIES.map(cat => {
+        const isSelected = appState.activeCategory === cat;
+        return `
+          <button 
+            onclick="selectCategory('${cat}')" 
+            class="px-4 py-2 rounded-2xl text-xs font-bold transition whitespace-nowrap ${
+              isSelected 
+                ? 'bg-stone-900 text-white shadow-md' 
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+            }">
+            ${cat}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderDishes() {
+      const grid = document.getElementById("dishes-grid");
+      const emptyState = document.getElementById("no-dishes-view");
+      if (!grid) return;
+
+      let list = appState.menu.filter(dish => {
+        const catMatch = appState.activeCategory === "All" || dish.category === appState.activeCategory;
+        let dietMatch = true;
+        if (appState.activeDiet === "veg") dietMatch = dish.diet === "veg";
+        if (appState.activeDiet === "nonveg") dietMatch = dish.diet === "nonveg";
+
+        const q = appState.searchQuery.toLowerCase().trim();
+        const searchMatch = !q || dish.name.toLowerCase().includes(q) || dish.description.toLowerCase().includes(q) || dish.category.toLowerCase().includes(q);
+
+        return catMatch && dietMatch && searchMatch;
+      });
+
+      if (appState.sortBy === "price-low") list.sort((a, b) => a.price - b.price);
+      else if (appState.sortBy === "price-high") list.sort((a, b) => b.price - a.price);
+      else if (appState.sortBy === "rating") list.sort((a, b) => b.rating - a.rating);
+
+      if (list.length === 0) {
+        grid.innerHTML = "";
+        if (emptyState) emptyState.classList.remove("hidden");
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add("hidden");
+      grid.innerHTML = list.map(dish => buildDishCard(dish)).join('');
+    }
+
+    function buildDishCard(dish) {
+      const isFav = appState.favorites.has(dish.id);
+      const qty = appState.cart[dish.id] || 0;
+
+      return `
+        <div class="bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-soft hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <!-- Image Container -->
+          <div class="relative h-44 w-full overflow-hidden bg-stone-100">
+            <img 
+              src="${dish.image}" 
+              alt="${dish.name}" 
+              loading="eager"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80';"
+            />
+            
+            <!-- Veg / Non-Veg Indicator -->
+            <div class="absolute top-3 left-3 bg-white/95 px-2 py-0.5 rounded-md flex items-center gap-1.5 shadow-sm">
+              <span class="w-2.5 h-2.5 rounded-full ${dish.diet === 'veg' ? 'bg-emerald-600' : 'bg-rose-600'}"></span>
+              <span class="text-[10px] font-bold uppercase tracking-wider ${dish.diet === 'veg' ? 'text-emerald-700' : 'text-rose-700'}">
+                ${dish.diet === 'veg' ? 'Veg' : 'Non-Veg'}
+              </span>
+            </div>
+
+            <!-- Favorite Button -->
+            <button 
+              onclick="toggleFavorite('${dish.id}')" 
+              class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-stone-400 hover:text-rose-500 shadow-sm transition active:scale-90"
+              title="Save to favorites"
+            >
+              <span class="${isFav ? 'text-rose-500' : 'text-stone-400'} text-sm font-bold">${isFav ? '❤️' : '🤍'}</span>
+            </button>
+
+            <!-- Rating Chip -->
+            <div class="absolute bottom-2.5 left-3 bg-stone-900/85 backdrop-blur-sm text-white text-[11px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+              <span class="text-amber-400">★</span> ${dish.rating} <span class="text-stone-400 text-[10px]">(${dish.reviews})</span>
+            </div>
+          </div>
+
+          <!-- Card Details -->
+          <div class="p-4 flex-1 flex flex-col justify-between space-y-2.5">
+            <div>
+              <span class="text-[10px] font-bold uppercase text-brand-600 tracking-wider">${dish.category}</span>
+              <h3 class="font-bold text-stone-900 text-sm leading-snug mt-0.5 line-clamp-1">${dish.name}</h3>
+              <p class="text-xs text-stone-500 mt-1 line-clamp-2 leading-relaxed font-normal">${dish.description}</p>
+            </div>
+
+            <div class="pt-2 border-t border-stone-100 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] text-stone-400 font-medium block">Price</span>
+                <span class="text-base font-black text-stone-900">₹${dish.price}</span>
+              </div>
+
+              <!-- Cart Control -->
+              <div>
+                ${qty > 0 ? `
+                  <div class="flex items-center gap-2 bg-stone-900 text-white rounded-xl px-2 py-1 shadow-sm">
+                    <button onclick="changeQty('${dish.id}', -1)" class="w-6 h-6 flex items-center justify-center font-bold hover:bg-stone-700 rounded text-stone-200">－</button>
+                    <span class="text-xs font-bold px-1 min-w-[16px] text-center">${qty}</span>
+                    <button onclick="changeQty('${dish.id}', 1)" class="w-6 h-6 flex items-center justify-center font-bold hover:bg-stone-700 rounded text-stone-200">＋</button>
+                  </div>
+                ` : `
+                  <button 
+                    onclick="addToCart('${dish.id}')" 
+                    class="px-3.5 py-1.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold tracking-wide transition shadow-sm active:scale-95 flex items-center gap-1"
+                  >
+                    <span>＋</span> Add
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function selectCategory(cat) {
+      appState.activeCategory = cat;
+      renderCategoryButtons();
+      renderDishes();
+    }
+
+    function setDietFilter(diet) {
+      appState.activeDiet = diet;
+      document.querySelectorAll(".diet-btn").forEach(b => {
+        b.className = "diet-btn px-3 py-1.5 rounded-xl text-stone-600 transition";
+      });
+      const active = document.getElementById(`diet-${diet}`);
+      if (active) active.className = "diet-btn px-3 py-1.5 rounded-xl bg-stone-900 text-white transition";
+      renderDishes();
+    }
+
+    function handleSearch(val) {
+      appState.searchQuery = val;
+      const clearBtn = document.getElementById("clear-search-btn");
+      if (clearBtn) {
+        if (val.length > 0) clearBtn.classList.remove("hidden");
+        else clearBtn.classList.add("hidden");
+      }
+      renderDishes();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById("search-input");
+      if (input) input.value = "";
+      handleSearch("");
+    }
+
+    function handleSortChange(sortVal) {
+      appState.sortBy = sortVal;
+      renderDishes();
+    }
+
+    function resetFilters() {
+      appState.activeCategory = "All";
+      appState.activeDiet = "all";
+      appState.searchQuery = "";
+      appState.sortBy = "default";
+      const sInput = document.getElementById("search-input");
+      if (sInput) sInput.value = "";
+      const sortEl = document.getElementById("sort-select");
+      if (sortEl) sortEl.value = "default";
+      setDietFilter("all");
+      renderCategoryButtons();
+      renderDishes();
+    }
+
+    function addToCart(dishId) {
+      appState.cart[dishId] = (appState.cart[dishId] || 0) + 1;
+      saveCart();
+      const item = appState.menu.find(d => d.id === dishId);
+      triggerToast(`Added ${item ? item.name : 'dish'} to cart!`, 'success');
+    }
+
+    function changeQty(dishId, delta) {
+      if (!appState.cart[dishId]) return;
+      const updated = appState.cart[dishId] + delta;
+      if (updated <= 0) {
+        delete appState.cart[dishId];
+      } else {
+        appState.cart[dishId] = updated;
+      }
+      saveCart();
+    }
+
+    function removeCartItem(dishId) {
+      delete appState.cart[dishId];
+      saveCart();
+    }
+
+    function computeTotals() {
+      let subtotal = 0;
+      let totalQty = 0;
+
+      for (const [id, count] of Object.entries(appState.cart)) {
+        const dish = appState.menu.find(d => d.id === id);
+        if (dish) {
+          subtotal += dish.price * count;
+          totalQty += count;
+        }
+      }
+
+      const tax = Math.round(subtotal * 0.05); // 5% GST
+      const discount = Math.round(subtotal * (appState.discountPercent / 100));
+      const grandTotal = Math.max(0, subtotal + tax - discount);
+
+      return { subtotal, tax, discount, grandTotal, totalQty };
+    }
+
+    function renderCartUI() {
+      const { subtotal, tax, discount, grandTotal, totalQty } = computeTotals();
+
+      const headerBadge = document.getElementById("header-cart-badge");
+      const headerSub = document.getElementById("header-cart-subtotal");
+      const drawerCount = document.getElementById("drawer-item-count");
+
+      if (totalQty > 0) {
+        headerBadge.textContent = totalQty;
+        headerBadge.classList.remove("scale-0");
+        headerSub.textContent = `₹${subtotal}`;
+        headerSub.classList.remove("hidden");
+      } else {
+        headerBadge.classList.add("scale-0");
+        headerSub.classList.add("hidden");
+      }
+
+      drawerCount.textContent = `${totalQty} item${totalQty === 1 ? '' : 's'} in cart`;
+
+      const listEl = document.getElementById("drawer-items-list");
+      const emptyEl = document.getElementById("drawer-empty-state");
+      const summaryEl = document.getElementById("drawer-summary-box");
+
+      if (totalQty === 0) {
+        listEl.innerHTML = "";
+        emptyEl.classList.remove("hidden");
+        summaryEl.classList.add("hidden");
+        return;
+      }
+
+      emptyEl.classList.add("hidden");
+      summaryEl.classList.remove("hidden");
+
+      listEl.innerHTML = Object.entries(appState.cart).map(([id, qty]) => {
+        const dish = appState.menu.find(d => d.id === id);
+        if (!dish) return '';
+        return `
+          <div class="py-3 flex items-center justify-between gap-3">
+            <img src="${dish.image}" class="w-12 h-12 rounded-xl object-cover" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=150&q=80'"/>
+            <div class="flex-1 min-w-0">
+              <h5 class="text-xs font-bold text-stone-900 truncate">${dish.name}</h5>
+              <div class="text-[11px] text-stone-500">₹${dish.price} x ${qty}</div>
+              <div class="text-xs font-black text-brand-600">₹${dish.price * qty}</div>
+            </div>
+            
+            <div class="flex items-center gap-1.5 bg-stone-100 p-1 rounded-xl">
+              <button onclick="changeQty('${dish.id}', -1)" class="w-6 h-6 rounded-lg bg-white shadow-xs flex items-center justify-center font-bold text-stone-700">－</button>
+              <span class="text-xs font-bold w-4 text-center">${qty}</span>
+              <button onclick="changeQty('${dish.id}', 1)" class="w-6 h-6 rounded-lg bg-white shadow-xs flex items-center justify-center font-bold text-stone-700">＋</button>
+            </div>
+
+            <button onclick="removeCartItem('${dish.id}')" class="text-stone-300 hover:text-rose-500 text-xs px-1">✕</button>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById("bill-subtotal").textContent = `₹${subtotal}`;
+      document.getElementById("bill-tax").textContent = `₹${tax}`;
+      document.getElementById("bill-total").textContent = `₹${grandTotal}`;
+      document.getElementById("checkout-amount").textContent = `₹${grandTotal}`;
+
+      const discountRow = document.getElementById("bill-discount-row");
+      const discountVal = document.getElementById("bill-discount");
+      if (discount > 0) {
+        discountRow.classList.remove("hidden");
+        discountVal.textContent = `-₹${discount}`;
+      } else {
+        discountRow.classList.add("hidden");
+      }
+    }
+
+    function toggleCartDrawer(open) {
+      const drawer = document.getElementById("cart-drawer");
+      const overlay = document.getElementById("cart-overlay");
+      if (open) {
+        overlay.classList.remove("pointer-events-none", "opacity-0");
+        drawer.classList.remove("translate-x-full");
+      } else {
+        overlay.classList.add("pointer-events-none", "opacity-0");
+        drawer.classList.add("translate-x-full");
+      }
+    }
+
+    function applyPromoCode() {
+      const input = document.getElementById("promo-input");
+      const res = document.getElementById("promo-result");
+      const val = input.value.trim().toUpperCase();
+
+      if (val === "TASTY20") {
+        appState.discountPercent = 20;
+        res.textContent = "✓ 20% discount applied to your dining bill!";
+        res.className = "text-[11px] font-bold text-emerald-600 block";
+        triggerToast("Promo code TASTY20 applied!", "success");
+      } else if (val === "TASTE10") {
+        appState.discountPercent = 10;
+        res.textContent = "✓ 10% discount applied to your dining bill!";
+        res.className = "text-[11px] font-bold text-emerald-600 block";
+        triggerToast("Promo code TASTE10 applied!", "success");
+      } else {
+        appState.discountPercent = 0;
+        res.textContent = "✗ Invalid code. Use 'TASTY20'";
+        res.className = "text-[11px] font-bold text-rose-600 block";
+      }
+      renderCartUI();
+    }
+
+    function toggleFavorite(id) {
+      if (appState.favorites.has(id)) {
+        appState.favorites.delete(id);
+        triggerToast("Removed from wishlist", "info");
+      } else {
+        appState.favorites.add(id);
+        triggerToast("Saved to favorites ❤️", "success");
+      }
+      saveFavorites();
+    }
+
+    function updateFavBadge() {
+      const badge = document.getElementById("nav-fav-badge");
+      if (!badge) return;
+      if (appState.favorites.size > 0) {
+        badge.textContent = appState.favorites.size;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
+
+    function renderFavorites() {
+      const grid = document.getElementById("favorites-grid");
+      const empty = document.getElementById("empty-favorites-view");
+      if (!grid) return;
+
+      const favList = appState.menu.filter(d => appState.favorites.has(d.id));
+
+      if (favList.length === 0) {
+        grid.innerHTML = "";
+        if (empty) empty.classList.remove("hidden");
+        return;
+      }
+
+      if (empty) empty.classList.add("hidden");
+      grid.innerHTML = favList.map(dish => buildDishCard(dish)).join('');
+    }
+
+    function openCheckoutModal() {
+      const { totalQty } = computeTotals();
+      if (totalQty === 0) {
+        triggerToast("Your cart is empty! Pick your favorite dishes.", "error");
+        return;
+      }
+      toggleCartDrawer(false);
+      document.getElementById("checkout-modal").classList.remove("hidden");
+      document.getElementById("checkout-modal").classList.add("flex");
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById("checkout-modal").classList.add("hidden");
+      document.getElementById("checkout-modal").classList.remove("flex");
+    }
+
+    function toggleOrderModeUI(mode) {
+      const tableBox = document.getElementById("table-select-container");
+      const preorderBox = document.getElementById("preorder-time-container");
+      const modeButtons = document.querySelectorAll(".order-mode-btn");
+
+      modeButtons.forEach(btn => {
+        btn.classList.remove("border-2", "border-brand-500", "bg-brand-50/70");
+        btn.classList.add("border-stone-200");
+      });
+
+      if (mode === 'seated') {
+        tableBox.classList.remove("hidden");
+        preorderBox.classList.add("hidden");
+        modeButtons[0].classList.add("border-2", "border-brand-500", "bg-brand-50/70");
+      } else {
+        tableBox.classList.add("hidden");
+        preorderBox.classList.remove("hidden");
+        modeButtons[1].classList.add("border-2", "border-brand-500", "bg-brand-50/70");
+      }
+    }
+
+    function highlightPayment(radio) {
+      document.querySelectorAll(".payment-card").forEach(c => {
+        c.className = "payment-card border border-stone-200 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-stone-400";
+      });
+      radio.closest(".payment-card").className = "payment-card border-2 border-brand-500 bg-brand-50/60 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer";
+    }
+
+    function handlePlaceOrder(e) {
+      e.preventDefault();
+      const orderType = document.querySelector('input[name="orderType"]:checked').value;
+      const name = document.getElementById("cust-name").value.trim();
+      const phone = document.getElementById("cust-phone").value.trim();
+      const instructions = document.getElementById("cust-instructions").value.trim();
+      const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+      let table = "Pending Arrival Check-in";
+      let arrivalMinutes = 0;
+      let arrivalDeadline = null;
+
+      if (orderType === "seated") {
+        table = document.getElementById("cust-table").value;
+      } else {
+        arrivalMinutes = parseInt(document.getElementById("cust-arrival-slider").value, 10);
+        // Cap strictly at 10 minutes maximum
+        if (arrivalMinutes > 10) arrivalMinutes = 10;
+        if (arrivalMinutes < 1) arrivalMinutes = 1;
+        arrivalDeadline = Date.now() + (arrivalMinutes * 60 * 1000);
+      }
+
+      const totals = computeTotals();
+
+      const items = Object.entries(appState.cart).map(([id, count]) => {
+        const dish = appState.menu.find(d => d.id === id);
+        return {
+          id,
+          name: dish.name,
+          price: dish.price,
+          count
+        };
+      });
+
+      const orderRecord = {
+        orderId: "TT-" + Math.floor(100000 + Math.random() * 900000),
+        placedAt: new Date().toISOString(),
+        orderType, // 'seated' | 'preorder'
+        table,
+        arrivalMinutes,
+        arrivalDeadline,
+        hasReached: false,
+        customer: { name, phone, instructions },
+        paymentMethod: method,
+        items,
+        amounts: totals,
+        status: orderType === "preorder" ? "Pre-Arrival Confirmed" : "Order Sent to Kitchen",
+        stepIndex: 1 // 1: Placed, 2: Cooking, 3: Plated/Ready, 4: Served
+      };
+
+      appState.orders.unshift(orderRecord);
+      saveOrders();
+
+      // Clear cart
+      appState.cart = {};
+      appState.discountPercent = 0;
+      saveCart();
+
+      closeCheckoutModal();
+      document.getElementById("cust-name").value = "";
+      document.getElementById("cust-phone").value = "";
+      document.getElementById("cust-instructions").value = "";
+
+      triggerToast(`Order #${orderRecord.orderId} received at TasteTrail kitchen!`, "success");
+      switchMainTab('orders');
+    }
+
+    function checkInCustomer(orderId) {
+      const order = appState.orders.find(o => o.orderId === orderId);
+      if (!order) return;
+
+      const randomTableNum = Math.floor(Math.random() * 15) + 1;
+      order.hasReached = true;
+      order.table = `Table ${randomTableNum} (Assigned on Arrival)`;
+      order.status = "Guest Arrived - Plating & Serving";
+      if (order.stepIndex < 3) order.stepIndex = 3;
+      saveOrders();
+
+      triggerToast(`Welcome to TasteTrail! You have been seated at Table ${randomTableNum}`, "success");
+    }
+
+    function advanceOrderStatusStaff(orderId, newStep) {
+      const order = appState.orders.find(o => o.orderId === orderId);
+      if (!order) return;
+
+      order.stepIndex = newStep;
+      if (newStep === 2) order.status = "Kitchen Cooking";
+      if (newStep === 3) order.status = "Food Ready / Plated";
+      if (newStep === 4) order.status = "Served to Guest";
+
+      saveOrders();
+      triggerToast(`Ticket #${orderId} marked as ${order.status}`, "info");
+    }
+
+    function renderOrdersView() {
+      const container = document.getElementById("orders-list-container");
+      const empty = document.getElementById("empty-orders-view");
+      const dot = document.getElementById("nav-orders-dot");
+      if (!container) return;
+
+      const hasActive = appState.orders.some(o => o.stepIndex < 4);
+      if (dot) {
+        if (hasActive) dot.classList.remove("hidden");
+        else dot.classList.add("hidden");
+      }
+
+      if (appState.orders.length === 0) {
+        container.innerHTML = "";
+        if (empty) empty.classList.remove("hidden");
+        return;
+      }
+
+      if (empty) empty.classList.add("hidden");
+
+      const now = Date.now();
+
+      container.innerHTML = appState.orders.map(order => {
+        const dateStr = new Date(order.placedAt).toLocaleString('en-US', {
+          dateStyle: 'medium',
+          timeStyle: 'short'
+        });
+
+        const steps = [
+          { name: "Received", icon: "✓" },
+          { name: "Cooking", icon: "🍳" },
+          { name: "Plated & Ready", icon: "🍽️" },
+          { name: "Served", icon: "😋" }
+        ];
+
+        let preArrivalHtml = "";
+        if (order.orderType === "preorder") {
+          let timeRemainingText = "Arrived";
+          let isUrgent = false;
+
+          if (order.arrivalDeadline && !order.hasReached) {
+            const diffSeconds = Math.max(0, Math.floor((order.arrivalDeadline - now) / 1000));
+            const mins = Math.floor(diffSeconds / 60);
+            const secs = diffSeconds % 60;
+            timeRemainingText = `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+            if (diffSeconds < 180) isUrgent = true;
+          }
+
+          preArrivalHtml = `
+            <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">⏱️</span>
+                <div>
+                  <div class="font-bold text-amber-900">Pre-Arrival Countdown (${order.arrivalMinutes}m window)</div>
+                  <div class="text-[11px] text-amber-700">Estimated Reach: <strong class="${isUrgent ? 'text-rose-600 font-extrabold' : ''}">${timeRemainingText}</strong></div>
+                </div>
+              </div>
+
+              ${!order.hasReached ? `
+                <button onclick="checkInCustomer('${order.orderId}')" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-sm text-xs transition active:scale-95">
+                  📍 I Have Reached! Assign Table
+                </button>
+              ` : `
+                <span class="px-3 py-1 bg-emerald-600 text-white font-bold rounded-xl text-[11px]">
+                  ✓ Checked-In & Seated
+                </span>
+              `}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="bg-white rounded-3xl border border-stone-200 shadow-soft overflow-hidden">
+            <div class="p-5 bg-stone-50 border-b border-stone-200 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-black text-stone-900 text-sm sm:text-base">${order.orderId}</span>
+                  <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                    order.stepIndex >= 4 
+                      ? 'bg-emerald-100 text-emerald-800' 
+                      : 'bg-amber-100 text-amber-800 animate-pulse'
+                  }">
+                    ${order.status}
+                  </span>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${order.orderType === 'seated' ? 'bg-stone-200 text-stone-800' : 'bg-brand-100 text-brand-800'}">
+                    ${order.orderType === 'seated' ? '🪑 Seated Order' : '⏱️ Pre-Arrival Order'}
+                  </span>
+                </div>
+                <div class="text-[11px] text-stone-500 mt-1">Placed at ${dateStr} • Paid via ${order.paymentMethod}</div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-black text-brand-600 bg-white px-2.5 py-1 rounded-xl border border-stone-200">
+                  ${order.table}
+                </span>
+                <button onclick="reorderAll('${order.orderId}')" class="px-3 py-1.5 bg-stone-900 hover:bg-black text-white text-xs font-bold rounded-xl transition">
+                  ↻ Reorder
+                </button>
+              </div>
+            </div>
+
+            <!-- Pre-Arrival Arrival Banner if relevant -->
+            ${order.orderType === "preorder" ? `<div class="px-5 pt-4">${preArrivalHtml}</div>` : ''}
+
+            <!-- Stepper Timeline -->
+            <div class="p-5 border-b border-stone-100">
+              <div class="grid grid-cols-4 gap-2 text-center">
+                ${steps.map((s, idx) => {
+                  const stepNum = idx + 1;
+                  const isDone = order.stepIndex >= stepNum;
+                  return `
+                    <div class="flex flex-col items-center">
+                      <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                        isDone ? 'bg-brand-500 text-white shadow-sm' : 'bg-stone-200 text-stone-400'
+                      }">
+                        ${s.icon}
+                      </div>
+                      <span class="text-[10px] font-bold mt-1.5 ${isDone ? 'text-stone-900' : 'text-stone-400'}">${s.name}</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- Order Details Summary -->
+            <div class="p-5 grid sm:grid-cols-2 gap-4 text-xs">
+              <div class="space-y-1.5">
+                <span class="font-bold text-stone-700 uppercase tracking-wider text-[10px] block">Order Items</span>
+                ${order.items.map(i => `
+                  <div class="flex justify-between text-stone-700">
+                    <span>${i.count}x ${i.name}</span>
+                    <span class="font-bold">₹${i.price * i.count}</span>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="border-t sm:border-t-0 sm:border-l border-stone-200 sm:pl-4 space-y-1">
+                <span class="font-bold text-stone-700 uppercase tracking-wider text-[10px] block">Guest Details & Seating</span>
+                <p class="font-semibold text-stone-800">${order.customer.name} (${order.customer.phone})</p>
+                <p class="text-stone-600 font-bold">${order.table}</p>
+                ${order.customer.instructions ? `<p class="text-stone-500 italic">Chef note: "${order.customer.instructions}"</p>` : ''}
+                <div class="pt-2 flex justify-between font-black text-sm text-stone-900 border-t border-stone-200 mt-2">
+                  <span>Grand Total</span>
+                  <span class="text-brand-600">₹${order.amounts.grandTotal}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderKDSView() {
+      const container = document.getElementById("kds-orders-container");
+      const empty = document.getElementById("kds-empty-view");
+      if (!container) return;
+
+      const activeOrders = appState.orders.filter(o => o.stepIndex < 4);
+
+      if (activeOrders.length === 0) {
+        container.innerHTML = "";
+        if (empty) empty.classList.remove("hidden");
+        return;
+      }
+
+      if (empty) empty.classList.add("hidden");
+
+      container.innerHTML = activeOrders.map(order => {
+        return `
+          <div class="bg-white rounded-2xl border-2 ${order.orderType === 'preorder' ? 'border-amber-300' : 'border-stone-200'} p-4 shadow-sm flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between pb-2 border-b border-stone-100">
+                <div>
+                  <span class="font-black text-stone-900 text-sm">${order.orderId}</span>
+                  <span class="block text-[10px] text-stone-400">${order.table}</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${order.orderType === 'preorder' ? 'bg-amber-100 text-amber-900' : 'bg-stone-100 text-stone-800'}">
+                  ${order.orderType === 'preorder' ? '⏱️ Pre-Arrival' : '🪑 Table Seated'}
+                </span>
+              </div>
+
+              <div class="py-2 space-y-1">
+                ${order.items.map(item => `
+                  <div class="flex justify-between text-xs font-bold text-stone-800">
+                    <span>${item.count} × ${item.name}</span>
+                  </div>
+                `).join('')}
+              </div>
+
+              ${order.customer.instructions ? `
+                <div class="p-2 bg-amber-50 rounded-xl text-[11px] text-amber-900 italic">
+                  Note: ${order.customer.instructions}
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Advance Kitchen Stage Action Buttons -->
+            <div class="pt-2 border-t border-stone-100 space-y-1.5">
+              <div class="text-[10px] font-bold text-stone-500 uppercase">Change Ticket Stage:</div>
+              <div class="grid grid-cols-3 gap-1 text-[11px] font-bold">
+                <button onclick="advanceOrderStatusStaff('${order.orderId}', 2)" class="py-1 rounded-lg ${order.stepIndex === 2 ? 'bg-brand-600 text-white' : 'bg-stone-100 text-stone-700 hover:bg-stone-200'}">
+                  Cooking
+                </button>
+                <button onclick="advanceOrderStatusStaff('${order.orderId}', 3)" class="py-1 rounded-lg ${order.stepIndex === 3 ? 'bg-brand-600 text-white' : 'bg-stone-100 text-stone-700 hover:bg-stone-200'}">
+                  Plated
+                </button>
+                <button onclick="advanceOrderStatusStaff('${order.orderId}', 4)" class="py-1 rounded-lg ${order.stepIndex === 4 ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'}">
+                  Served ✓
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function reorderAll(orderId) {
+      const found = appState.orders.find(o => o.orderId === orderId);
+      if (!found) return;
+      found.items.forEach(i => {
+        appState.cart[i.id] = (appState.cart[i.id] || 0) + i.count;
+      });
+      saveCart();
+      toggleCartDrawer(true);
+      triggerToast("Items added back to your cart!", "success");
+    }
+
+    function switchMainTab(tab) {
+      const menuView = document.getElementById("menu-view");
+      const favView = document.getElementById("favorites-view");
+      const orderView = document.getElementById("orders-view");
+      const kdsView = document.getElementById("kds-view");
+      const hero = document.getElementById("hero-banner");
+
+      const btnMenu = document.getElementById("nav-btn-menu");
+      const btnFav = document.getElementById("nav-btn-favorites");
+      const btnOrders = document.getElementById("nav-btn-orders");
+      const btnKds = document.getElementById("nav-btn-kds");
+
+      [btnMenu, btnFav, btnOrders, btnKds].forEach(b => {
+        if (b) b.className = "px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-stone-600 hover:text-stone-950 flex items-center gap-1.5";
+      });
+
+      menuView.classList.add("hidden");
+      favView.classList.add("hidden");
+      orderView.classList.add("hidden");
+      kdsView.classList.add("hidden");
+
+      if (tab === 'menu') {
+        menuView.classList.remove("hidden");
+        hero.classList.remove("hidden");
+        btnMenu.className = "px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-white bg-brand-600 shadow-sm flex items-center gap-1.5";
+        renderDishes();
+      } else if (tab === 'favorites') {
+        favView.classList.remove("hidden");
+        hero.classList.add("hidden");
+        btnFav.className = "px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-white bg-brand-600 shadow-sm flex items-center gap-1.5";
+        renderFavorites();
+      } else if (tab === 'orders') {
+        orderView.classList.remove("hidden");
+        hero.classList.add("hidden");
+        btnOrders.className = "px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-white bg-brand-600 shadow-sm flex items-center gap-1.5";
+        renderOrdersView();
+      } else if (tab === 'kds') {
+        kdsView.classList.remove("hidden");
+        hero.classList.add("hidden");
+        btnKds.className = "px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-white bg-stone-900 shadow-sm flex items-center gap-1.5";
+        renderKDSView();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMobileMenu() {
+      const panel = document.getElementById("mobile-nav-panel");
+      panel.classList.toggle("hidden");
+    }
+
+    function triggerToast(message, type = 'info') {
+      const container = document.getElementById("toast-shelf");
+      const toast = document.createElement("div");
+
+      const colors = {
+        success: 'bg-emerald-600 text-white',
+        error: 'bg-rose-600 text-white',
+        info: 'bg-stone-900 text-white'
+      };
+
+      toast.className = `${colors[type] || colors.info} px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-bold pointer-events-auto transform translate-y-3 opacity-0 transition-all duration-300 border border-white/10`;
+      toast.innerHTML = `<span>${message}</span>`;
+
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove("translate-y-3", "opacity-0");
+      });
+
+      setTimeout(() => {
+        toast.classList.add("translate-y-3", "opacity-0");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    /* Live 1-second arrival countdown tick */
+    setInterval(() => {
+      const hasActivePreorder = appState.orders.some(o => o.orderType === "preorder" && !o.hasReached);
+      if (hasActivePreorder) {
+        renderOrdersView();
+      }
+    }, 1000);
+
+    initLocalStorage();
+    renderCategoryButtons();
+    renderDishes();
+    renderCartUI();
+    updateFavBadge();
+    renderOrdersView();
+    renderKDSView();
+  </script>
+</body>
+</html>
